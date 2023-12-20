@@ -17,6 +17,7 @@ provider "aws" {
     default_tags {
         tags = {
             ManagedByTerraform  = "true"
+            TestingTag          = "test"
         }
     }
 }
@@ -31,21 +32,21 @@ data "aws_ami" "ubuntu_latest" {
 }
 
 resource "aws_instance" "web-app" {
+    for_each = toset(["serverA"])
     ami = data.aws_ami.ubuntu_latest.image_id
     instance_type = var.instance_type
-    count = 1
     tags = {
-        Name = "${var.instance_tag}-${count.index+1}"
+        Name = "${var.instance_tag}-${each.key}"
     }
     user_data = file("${path.module}/script.sh")
 }
 
 output "instance_id" {
     description = "Instance ID"
-    value = aws_instance.web-app[0].id  
+    value = {for name, server in aws_instance.web-app : name => server.id }
 }
 
 output "instance_public_ip" {
     description = "Public IP of an instance"
-    value = aws_instance.web-app[0].public_ip  
+    value = {for name, server in aws_instance.web-app : name => server.public_ip}
 }

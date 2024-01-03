@@ -1,7 +1,7 @@
 terraform {
     cloud { 
         organization = "jiriSvoboda" 
-        workspaces { name = "github-workspace" } 
+        workspaces { name = "webApp-workspace" } 
         }
     required_providers {
         aws = {

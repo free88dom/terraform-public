@@ -249,3 +249,23 @@ resource "aws_dynamodb_table" "dynamodb_table" {
     type = "S"
   }
 }
+
+output "api_gw_url" {
+  value = aws_api_gateway_deployment.deployment.invoke_url
+}
+
+# Amplify
+resource "aws_amplify_app" "amplify" {
+    name       = "web-app"
+    repository = "https://github.com/free88dom/web-app"
+    access_token = "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"
+}
+
+resource "aws_amplify_branch" "master" {
+  app_id      = aws_amplify_app.amplify.id
+  branch_name = "main"
+
+  stage     = "DEVELOPMENT"
+}
+# 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
+#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
